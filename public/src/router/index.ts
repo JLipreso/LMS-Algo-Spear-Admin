@@ -21,6 +21,60 @@ const router = createRouter({
         requiresAuth: false
       },
     },
+    {
+      path: '/questionnaire',
+      name: 'questionnaire',
+      component: () => import('@/pages/questionnaire/index.vue'),
+      meta: {
+        title: "Questionnaire",
+        requiresAuth: false
+      },
+    },
+    {
+      path: '/quizzes',
+      name: 'quizzes',
+      component: () => import('@/pages/quizzes/index.vue'),
+      meta: {
+        title: "Quizzes",
+        requiresAuth: false
+      },
+    },
+    {
+      path: '/reading-materials',
+      name: 'reading_materials',
+      component: () => import('@/pages/reading-materials/index.vue'),
+      meta: {
+        title: "Reading Materials",
+        requiresAuth: false
+      },
+    },
+    {
+      path: '/video-tutorials',
+      name: 'video_tutorials',
+      component: () => import('@/pages/reading-materials/index.vue'),
+      meta: {
+        title: "Video Tutorials",
+        requiresAuth: false
+      },
+    },
+    {
+      path: '/users-admin',
+      name: 'users-admin',
+      component: () => import('@/pages/users-admin/index.vue'),
+      meta: {
+        title: "Users | Admin",
+        requiresAuth: false
+      },
+    },
+    {
+      path: '/users-student',
+      name: 'users-student',
+      component: () => import('@/pages/users-student/index.vue'),
+      meta: {
+        title: "Users | Student",
+        requiresAuth: false
+      },
+    },
   ],
 })
 
