@@ -4,6 +4,8 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
+import 'bootstrap-icons/font/bootstrap-icons.min.css';
+
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
