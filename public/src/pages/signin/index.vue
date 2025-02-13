@@ -37,7 +37,7 @@
 <script lang="ts">
   
   import { defineComponent } from 'vue';
-  import { userAdminSignIn } from "@/uikit-api";
+  import { isAuthenticated, userAdminSignIn } from "@/uikit-api";
 
   export default defineComponent({
     name: "SignInPage",
@@ -51,6 +51,11 @@
       }
     },
     methods: {
+      async redirect() {
+        if(isAuthenticated()) {
+          this.$router.replace('/dashboard');
+        }
+      },
       async login() {
         this.loading = false;
         await userAdminSignIn(this.form).then( async (response) => {
@@ -63,7 +68,10 @@
           }
         });
       }
-    }
+    },
+    async mounted() {
+      await this.redirect();
+    },
   });
 
 </script>

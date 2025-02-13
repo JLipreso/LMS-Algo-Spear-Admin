@@ -51,7 +51,7 @@ const router = createRouter({
     {
       path: '/video-tutorials',
       name: 'video_tutorials',
-      component: () => import('@/pages/reading-materials/index.vue'),
+      component: () => import('@/pages/video-tutorials/index.vue'),
       meta: {
         title: "Video Tutorials",
         requiresAuth: false

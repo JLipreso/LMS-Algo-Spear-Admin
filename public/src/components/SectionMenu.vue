@@ -30,46 +30,25 @@
         <span class="menu-header-text">Assessment</span>
       </li>
       <li class="menu-item">
-        <a href="cards-basic.html" class="menu-link">
-          <i class="menu-icon tf-icons bx bxs-alarm-exclamation"></i>
-          <div data-i18n="Basic">Exercises</div>
-        </a>
-      </li>
-      <li class="menu-item">
-        <a href="cards-basic.html" class="menu-link">
+        <router-link class="menu-link" to="/quizzes">
           <i class="menu-icon tf-icons bx bxs-adjust-alt"></i>
           <div>Quizzes</div>
-        </a>
-      </li>
-      <li class="menu-header small text-uppercase">
-        <span class="menu-header-text">Visualizations</span>
-      </li>
-      <li class="menu-item">
-        <a href="cards-basic.html" class="menu-link">
-          <i class="menu-icon tf-icons bx bxs-data"></i>
-          <div>Data Structures</div>
-        </a>
-      </li>
-      <li class="menu-item">
-        <a href="cards-basic.html" class="menu-link">
-          <i class="menu-icon tf-icons bx bxl-algolia"></i>
-          <div>Algorithms</div>
-        </a>
+        </router-link>
       </li>
       <li class="menu-header small text-uppercase">
         <span class="menu-header-text">People</span>
       </li>
       <li class="menu-item">
-        <a href="cards-basic.html" class="menu-link">
+        <router-link class="menu-link" to="/users-student">
           <i class="menu-icon tf-icons bx bx-user"></i>
           <div>Students</div>
-        </a>
+        </router-link>
       </li>
       <li class="menu-item">
-        <a href="cards-basic.html" class="menu-link">
+        <router-link class="menu-link" to="/users-admin">
           <i class="menu-icon tf-icons bx bxs-user-account"></i>
           <div>Staff</div>
-        </a>
+        </router-link>
       </li>
     </ul>
   </aside>
