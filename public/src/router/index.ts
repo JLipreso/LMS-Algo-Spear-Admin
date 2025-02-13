@@ -59,7 +59,7 @@ const router = createRouter({
     },
     {
       path: '/users-admin',
-      name: 'users-admin',
+      name: 'users_admin',
       component: () => import('@/pages/users-admin/index.vue'),
       meta: {
         title: "Users | Admin",
@@ -68,7 +68,7 @@ const router = createRouter({
     },
     {
       path: '/users-student',
-      name: 'users-student',
+      name: 'users_student',
       component: () => import('@/pages/users-student/index.vue'),
       meta: {
         title: "Users | Student",

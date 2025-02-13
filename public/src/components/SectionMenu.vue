@@ -5,22 +5,22 @@
     </div>
     <div class="menu-inner-shadow"></div>
     <ul class="menu-inner py-1">
-      <li class="menu-item active">
-        <a href="index.html" class="menu-link">
+      <li class="menu-item" :class="{ active : $route.name == 'dashboard' ? true : false }">
+        <router-link class="menu-link" to="/dashboard">
           <i class="menu-icon tf-icons bx bx-home-circle"></i>
           <div data-i18n="Analytics">Dashboard</div>
-        </a>
+        </router-link>
       </li>
       <li class="menu-header small text-uppercase">
         <span class="menu-header-text">Courses</span>
       </li>
-      <li class="menu-item">
+      <li class="menu-item" :class="{ active : $route.name == 'reading_materials' ? true : false }">
         <router-link class="menu-link" to="/reading-materials">
           <i class="menu-icon tf-icons bx bxs-book-reader"></i>
           <div data-i18n="Basic">Reading Materials</div>
         </router-link>
       </li>
-      <li class="menu-item">
+      <li class="menu-item" :class="{ active : $route.name == 'video_tutorials' ? true : false }">
         <router-link class="menu-link" to="/video-tutorials">
           <i class="menu-icon tf-icons bx bxs-video-recording"></i>
           <div data-i18n="Basic">Video Tutorials</div>
@@ -29,7 +29,7 @@
       <li class="menu-header small text-uppercase">
         <span class="menu-header-text">Assessment</span>
       </li>
-      <li class="menu-item">
+      <li class="menu-item" :class="{ active : $route.name == 'quizzes' ? true : false }">
         <router-link class="menu-link" to="/quizzes">
           <i class="menu-icon tf-icons bx bxs-adjust-alt"></i>
           <div>Quizzes</div>
@@ -38,16 +38,16 @@
       <li class="menu-header small text-uppercase">
         <span class="menu-header-text">People</span>
       </li>
-      <li class="menu-item">
+      <li class="menu-item" :class="{ active : $route.name == 'users_student' ? true : false }">
         <router-link class="menu-link" to="/users-student">
           <i class="menu-icon tf-icons bx bx-user"></i>
           <div>Students</div>
         </router-link>
       </li>
-      <li class="menu-item">
+      <li class="menu-item" :class="{ active : $route.name == 'users_admin' ? true : false }">
         <router-link class="menu-link" to="/users-admin">
           <i class="menu-icon tf-icons bx bxs-user-account"></i>
-          <div>Staff</div>
+          <div>Admin</div>
         </router-link>
       </li>
     </ul>
