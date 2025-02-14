@@ -17,11 +17,11 @@
               </div>
               <ElemProgressbar :loading="loading.table"/>
               <div class="table-responsive text-nowrap">
-                <table class="table">
+                <table class="table table-striped text-dark">
                   <thead>
                     <tr>
                       <th>No</th>
-                      <th>Topic</th>
+                      <th>Reference ID</th>
                       <th>Title</th>
                       <th>Registered Date</th>
                       <th style="width: 80px;">Edit</th>
@@ -29,13 +29,13 @@
                     </tr>
                   </thead>
                   <tbody class="table-border-bottom-0">
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td><button class="btn btn-primary btn-sm w-100">Edit</button></td>
-                      <td><button class="btn btn-danger btn-sm w-100">Delete</button></td>
+                    <tr v-for="(video, vi) in video_tutorials?.data" :key="vi">
+                      <td>{{ (vi + 1) * video_tutorials?.current_page }}</td>
+                      <td>{{ video?.video_refid }}</td>
+                      <td class="text-wrap">{{ video?.title }}</td>
+                      <td>{{ dateTimeToString(video?.created_at) }}</td>
+                      <td><button class="btn btn-primary btn-sm w-100" @click="onEditVideo(video)">Edit</button></td>
+                      <td><button class="btn btn-danger btn-sm w-100" @click="onDeleteVideo(video)" >Delete</button></td>
                     </tr>
                   </tbody>
                 </table>
@@ -46,38 +46,86 @@
       </div>
     </div>
     <ModalVideoLinkAdd :open="modal.add_video.open" :reset="modal.add_video.reset" @closed="()=>{ modal.add_video.open = false }" />
+    <ModalVideoLinkEdit :open="modal.edit_video.open" :video="modal.edit_video.video" @closed="()=>{ modal.edit_video.open = false }" />
   </div>
 </template>
 <script lang="ts">
 
-  import { defineComponent } from 'vue';
+  import { defineComponent, toRaw } from 'vue';
+  import { videoTutorialDelete, randomNumbers, videoTutorialFetchPaginate, printDevLog, dateTimeToString } from '@/uikit-api';
   import ElemPageTitle from "@/components/ElemPageTitle.vue";
   import ElemProgressbar from "@/components/ElemProgressbar.vue";
   import SectionMenu from "@/components/SectionMenu.vue";
   import SectionNavbar from "@/components/SectionNavbar.vue";
   import ModalVideoLinkAdd from "@/components/ModalVideoLinkAdd.vue";
-import { randomNumbers } from '@/uikit-api';
-
+  import ModalVideoLinkEdit from "@/components/ModalVideoLinkEdit.vue";
+  
   export default defineComponent({
-    components: { ModalVideoLinkAdd, ElemProgressbar, ElemPageTitle, SectionMenu, SectionNavbar },
+    components: { ModalVideoLinkEdit, ModalVideoLinkAdd, ElemProgressbar, ElemPageTitle, SectionMenu, SectionNavbar },
+    setup() {
+      return {
+        dateTimeToString
+      }
+    },
     data() {
       return {
         loading: {
-          table: true
+          table: false
         },
         modal: {
           add_video: {
             open: false,
             reset: 0
+          },
+          edit_video: {
+            open: false,
+            video: {}
           }
-        }
+        },
+        video_tutorials: {}
       }
     },
     methods: {
       async onAddVideoLink() {
         this.modal.add_video.open     = true;
         this.modal.add_video.reset    = randomNumbers();
+      },
+      async onFetchVideoTutorials(page: number) {
+        this.loading.table      = true;
+        await videoTutorialFetchPaginate({ page: page}).then( async (video_tutorials) => {
+          this.loading.table    = false;
+          this.video_tutorials  = video_tutorials;
+        });
+      },
+      onEditVideo(video: any) {
+        this.modal.edit_video.open  = true;
+        this.modal.edit_video.video = video; 
+      },
+      onDeleteVideo(video: any) {
+        this.$swal({
+          title: "Confirmation",
+          text: "Delete " + video?.title + "?",
+          showCancelButton: true,
+          confirmButtonText: "Delete",
+          icon: "question",
+        }).then( async (result) => {
+          if(result.isConfirmed) {
+            await videoTutorialDelete(video?.video_refid).then( async (response) => {
+              if(response?.success) {
+                await this.onFetchVideoTutorials(1);
+              }
+              else {
+                this.$toast.warning(response?.message);
+              }
+            });
+          }
+        });
       }
+    },
+    async mounted() {
+      await this.onFetchVideoTutorials().then( async () => {
+        printDevLog("Video Tutorial:", toRaw(this.$data));
+      });
     }
   });
 </script>

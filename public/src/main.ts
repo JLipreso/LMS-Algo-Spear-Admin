@@ -15,16 +15,18 @@ import router from './router';
 import ToastPlugin from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-bootstrap.css';
 
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+
 import { createHead } from '@unhead/vue';
 const head = createHead;
 
 const app = createApp(App)
 
 app.use(createPinia())
-app.use(router)
-app.use(head);
-app.use(ToastPlugin,{
-    position: 'bottom'
-});
+    .use(router)
+    .use(head)
+    .use(ToastPlugin,{ position: 'bottom' })
+    .use(VueSweetalert2);
 
 app.mount('#app')

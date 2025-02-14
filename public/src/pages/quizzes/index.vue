@@ -7,6 +7,7 @@
         <div class="content-wrapper">
           <div class="container-xxl flex-grow-1 container-p-y">
             <ElemPageTitle page_group="Assessments" page_title="Quizzes" />
+            
           </div>
         </div>
       </div>
@@ -21,6 +22,11 @@
   import SectionNavbar from "@/components/SectionNavbar.vue";
 
   export default defineComponent({
-    components: { ElemPageTitle, SectionMenu, SectionNavbar },
+    components: { Ckeditor, ElemPageTitle, SectionMenu, SectionNavbar },
+    data() {
+      return {
+        input: ""
+      }
+    }
   });
 </script>

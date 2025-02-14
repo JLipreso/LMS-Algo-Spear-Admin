@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">New Video Link</h5>
+          <h5 class="modal-title">Edit Video Link</h5>
         </div>
         <div class="modal-body" style="max-height: calc(100vh - 200px);overflow: auto;">
           <div class="row">
@@ -39,7 +39,7 @@
                     <textarea v-model="form.description" class="form-control" rows="9"></textarea>
                   </div>
                   <div class="d-flex justify-content-end mt-4">
-                    <button class="btn btn-primary w-50" @click="onSubmitVideo()">Submit Link</button>
+                    <button class="btn btn-primary w-50" @click="onUpdateVideo()">Update</button>
                   </div>
                 </div>
               </div>
@@ -65,7 +65,7 @@
 <script lang="ts">
 
   import { defineComponent, toRaw } from 'vue';
-  import { fetchAllVideoGroup, printDevLog, createVideoTutorial, lsGetUser, SystemMessage } from "@/uikit-api";
+  import { fetchAllVideoGroup, printDevLog, updateVideoTutorial, lsGetUser, SystemMessage } from "@/uikit-api";
 
   export default defineComponent({
     name: "ModalVideoLinkAdd",
@@ -75,49 +75,34 @@
         default: false,
         type: Boolean
       },
-      reset: {
-        default: 0,
-        type: Number
+      video: {
+        default: {},
+        type: Object
       }
     },
     data() {
       return {
         video_groups: [] as any,
-        form: {
-          video_group_refid: '0',
-          video_link: '',
-          video_code: '',
-          title: '',
-          description: '',
-          created_by: ''
-        }
+        form: {}
       }
     },
     methods: {
       closeModal() {
         this.$emit("closed");
       },
-      async clearForm() {
-        this.form.video_group_refid   = '0';
-        this.form.video_link          = '';
-        this.form.video_code          = '';
-        this.form.title               = '';
-        this.form.description         = '';
-        this.form.created_by          = '';
-        return true;
-      },
       async onFetchVideoGroup() {
         await fetchAllVideoGroup().then( async (video_groups) => {
           this.video_groups = video_groups;
         }); 
       },
-      async onSubmitVideo() {
-        await createVideoTutorial(this.form).then( async (response) => {
+      async onUpdateVideo() {
+        await updateVideoTutorial(this.form).then( async (response) => {
           if(response?.success) {
-            this.$toast.success("Successfully saved");
-            await this.clearForm().then( async () => {
+            this.$toast.success('Updated successfully');
+            this.form = {};
+            setTimeout(() => {
               this.$emit('closed');
-            });
+            }, 1200);
           }
           else {
             this.$toast.warning(response?.message);
@@ -126,19 +111,22 @@
       }
     },
     watch: {
-      reset: async function () {
-        const user = await lsGetUser() as any;
-        if(user) {
-          this.form.created_by = user?.user_refid;
-          await this.onFetchVideoGroup().then( async () => {
-            printDevLog("Add Video Data:", toRaw(this.$data));
-          });
+      open: async function () {
+        if(this.open) {
+          const user = await lsGetUser() as any;
+          if(user) {
+            this.form               = this.video;
+            this.form.created_by    = user?.user_refid;
+            await this.onFetchVideoGroup().then( async () => {
+              printDevLog("Edit Video Data:", toRaw(this.$data));
+            });
+          }
+          else {
+            this.$toast.warning(SystemMessage()['NO_ACTIVE_USER']);
+            localStorage.clear();
+            this.$router.replace('/');
+          } 
         }
-        else {
-          this.$toast.warning(SystemMessage()['NO_ACTIVE_USER']);
-          localStorage.clear();
-          this.$router.replace('/');
-        } 
       }
     }
   });
