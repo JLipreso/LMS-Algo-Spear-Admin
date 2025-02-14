@@ -18,7 +18,7 @@ const router = createRouter({
       component: () => import('@/pages/dashboard/index.vue'),
       meta: {
         title: "Dashboard",
-        requiresAuth: false
+        requiresAuth: true
       },
     },
     {
@@ -27,7 +27,7 @@ const router = createRouter({
       component: () => import('@/pages/questionnaire/index.vue'),
       meta: {
         title: "Questionnaire",
-        requiresAuth: false
+        requiresAuth: true
       },
     },
     {
@@ -36,7 +36,7 @@ const router = createRouter({
       component: () => import('@/pages/quizzes/index.vue'),
       meta: {
         title: "Quizzes",
-        requiresAuth: false
+        requiresAuth: true
       },
     },
     {
@@ -45,7 +45,7 @@ const router = createRouter({
       component: () => import('@/pages/reading-materials/index.vue'),
       meta: {
         title: "Reading Materials",
-        requiresAuth: false
+        requiresAuth: true
       },
     },
     {
@@ -54,7 +54,7 @@ const router = createRouter({
       component: () => import('@/pages/video-tutorials/index.vue'),
       meta: {
         title: "Video Tutorials",
-        requiresAuth: false
+        requiresAuth: true
       },
     },
     {
@@ -63,7 +63,7 @@ const router = createRouter({
       component: () => import('@/pages/users-admin/index.vue'),
       meta: {
         title: "Users | Admin",
-        requiresAuth: false
+        requiresAuth: true
       },
     },
     {
@@ -72,7 +72,7 @@ const router = createRouter({
       component: () => import('@/pages/users-student/index.vue'),
       meta: {
         title: "Users | Student",
-        requiresAuth: false
+        requiresAuth: true
       },
     },
   ],
