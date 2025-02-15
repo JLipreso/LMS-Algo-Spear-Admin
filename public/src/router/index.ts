@@ -49,6 +49,15 @@ const router = createRouter({
       },
     },
     {
+      path: '/reading-materials-create',
+      name: 'reading_materials_create',
+      component: () => import('@/pages/reading-materials-create/index.vue'),
+      meta: {
+        title: "Create Reading Materials",
+        requiresAuth: true
+      },
+    },
+    {
       path: '/video-tutorials',
       name: 'video_tutorials',
       component: () => import('@/pages/video-tutorials/index.vue'),

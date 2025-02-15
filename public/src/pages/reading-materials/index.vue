@@ -8,7 +8,7 @@
           <div class="container-xxl flex-grow-1 container-p-y">
             <ElemPageTitle page_group="Courses" page_title="Reading Materials" />
             <div class="row">
-              <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 my-3">
+              <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 my-3" @click="()=>{ $router.push('/reading-materials-create'); }" >
                 <img class="w-100" src="https://marketplace.canva.com/EADaiOc6T_o/3/0/1600w/canva-green-and-white-simple-blog-post-guide-linkedin-article-cover-image-k4HqWyb5gDA.jpg" />
                 <div class="card">
                   <div class="py-4" style="cursor: pointer;">

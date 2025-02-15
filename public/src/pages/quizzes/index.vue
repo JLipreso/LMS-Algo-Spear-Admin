@@ -22,7 +22,7 @@
   import SectionNavbar from "@/components/SectionNavbar.vue";
 
   export default defineComponent({
-    components: { Ckeditor, ElemPageTitle, SectionMenu, SectionNavbar },
+    components: { ElemPageTitle, SectionMenu, SectionNavbar },
     data() {
       return {
         input: ""
