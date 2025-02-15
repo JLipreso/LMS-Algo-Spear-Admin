@@ -8,25 +8,8 @@
           <div class="container-xxl flex-grow-1 container-p-y">
             <ElemPageTitle page_group="Courses" page_title="Reading Materials" />
             <div class="row">
-              <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 my-3" @click="()=>{ $router.push('/reading-materials-create'); }" >
-                <img class="w-100" src="https://marketplace.canva.com/EADaiOc6T_o/3/0/1600w/canva-green-and-white-simple-blog-post-guide-linkedin-article-cover-image-k4HqWyb5gDA.jpg" />
-                <div class="card">
-                  <div class="py-4" style="cursor: pointer;">
-                    <h1 class="text-center"><i class="bi bi-plus-circle-fill"></i></h1>
-                    <p class="text-center">Create Article</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 my-3" v-for="(article, ai) in 24" :key="ai">
-                <div class="card">
-                  <img class="w-100" src="https://marketplace.canva.com/EADaiOc6T_o/3/0/1600w/canva-green-and-white-simple-blog-post-guide-linkedin-article-cover-image-k4HqWyb5gDA.jpg" />
-                  <div class="card-body">
-                    <h5>Article Title here</h5>
-                    <p>It is the main/feature story that appears with a picture on the front cover of a newspaper or magazine</p>
-                    <div class="d-flex"></div>
-                  </div>
-                </div>
-              </div>
+              <ArticleAddButton/>
+              <ArticleCard v-for="(article, ai) in articles" :key="ai" :article="article"/>
             </div>
           </div>
         </div>
@@ -36,12 +19,37 @@
 </template>
 <script lang="ts">
 
-  import { defineComponent } from 'vue';
+  import { defineComponent, toRaw } from 'vue';
+  import { fetchAllArticles, printDevLog, dateTimeToString } from "@/uikit-api";
   import ElemPageTitle from "@/components/ElemPageTitle.vue";
   import SectionMenu from "@/components/SectionMenu.vue";
   import SectionNavbar from "@/components/SectionNavbar.vue";
+  import ArticleAddButton from "./components/ArticleAddButton.vue";
+  import ArticleCard from "./components/ArticleCard.vue";
 
   export default defineComponent({
-    components: { ElemPageTitle, SectionMenu, SectionNavbar },
+    components: { ArticleAddButton, ArticleCard, ElemPageTitle, SectionMenu, SectionNavbar },
+    setup() {
+      return {
+        dateTimeToString
+      }
+    },
+    data() {
+      return {
+        articles: {} as any
+      }
+    },
+    methods: {
+      async onFetchArtilce() {
+        await fetchAllArticles().then( async (articles) => {
+          this.articles = articles;
+        });
+      }
+    },
+    async mounted() {
+      await this.onFetchArtilce().then( async () => {
+        printDevLog("Reading Materials:", toRaw(this.$data));
+      });
+    },
   });
 </script>
