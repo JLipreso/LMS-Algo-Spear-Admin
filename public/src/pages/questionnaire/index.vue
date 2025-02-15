@@ -6,7 +6,15 @@
         <SectionNavbar/>
         <div class="content-wrapper">
           <div class="container-xxl flex-grow-1 container-p-y">
-            <ElemPageTitle page_group="Assessment" page_title="Questionnaire" />
+            <div class="d-flex justify-content-between align-items-center">
+              <ElemPageTitle page_group="Assessment" page_title="Questionnaire" />
+              <button class="btn btn-primary">Create</button>
+            </div>
+            <div class="card">
+              <div class="card-body">
+
+              </div>
+            </div>
           </div>
         </div>
       </div>
