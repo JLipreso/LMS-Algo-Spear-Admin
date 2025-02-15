@@ -58,6 +58,15 @@ const router = createRouter({
       },
     },
     {
+      path: '/reading-materials-edit/:article_refid',
+      name: 'reading_materials_edit',
+      component: () => import('@/pages/reading-materials-edit/index.vue'),
+      meta: {
+        title: "Edit Reading Materials",
+        requiresAuth: true
+      },
+    },
+    {
       path: '/video-tutorials',
       name: 'video_tutorials',
       component: () => import('@/pages/video-tutorials/index.vue'),

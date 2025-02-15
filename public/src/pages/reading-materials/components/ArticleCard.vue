@@ -3,11 +3,15 @@
     <div class="card">
       <img class="w-100" src="/src/assets/img/reading-material-banner.jpg" />
       <div class="card-body">
-        <h5>{{ article?.title }}</h5>
-        <p>Posted on {{ dateTimeToString(article?.created_at) }}</p>
-        <div>
-          <button class="btn btn-secondary btn-sm w-100">Edit</button>
-          <button class="btn btn-danger btn-sm w-100 mt-3">Delete</button>
+        <h5 class="text-dark">{{ article?.title }}</h5>
+        <p><small>Posted on {{ dateTimeToString(article?.created_at) }}</small></p>
+        <div class="row">
+          <div class="col-6">
+            <button class="btn btn-secondary btn-sm w-100" @click="onEditArticle()">Edit</button>
+          </div>
+          <div class="col-6">
+            <button class="btn btn-danger btn-sm w-100" @click="onDeleteArticle()">Delete</button>
+          </div>
         </div>
       </div>
     </div>
@@ -20,7 +24,7 @@
 
   export default defineComponent({
     name: "ArticleCard",
-    emits: [''],
+    emits: ['edit', 'delete'],
     props: {
       article: {
         default: {} as any,
@@ -33,8 +37,11 @@
       }
     },
     methods: {
-      editArticle() {
-
+      onEditArticle() {
+        this.$emit('edit', this.article );
+      },
+      onDeleteArticle() {
+        this.$emit('delete', this.article );
       }
     }
   });

@@ -29,10 +29,10 @@
       <li class="menu-header small text-uppercase">
         <span class="menu-header-text">Assessment</span>
       </li>
-      <li class="menu-item" :class="{ active : $route.name == 'quizzes' ? true : false }">
-        <router-link class="menu-link" to="/quizzes">
+      <li class="menu-item" :class="{ active : $route.name == 'questionnaire' ? true : false }">
+        <router-link class="menu-link" to="/questionnaire">
           <i class="menu-icon tf-icons bx bxs-adjust-alt"></i>
-          <div>Quizzes</div>
+          <div>Questionnaire</div>
         </router-link>
       </li>
       <li class="menu-header small text-uppercase">

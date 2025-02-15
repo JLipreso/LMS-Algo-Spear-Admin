@@ -6,7 +6,7 @@
         <SectionNavbar/>
         <div class="content-wrapper">
           <div class="container-xxl flex-grow-1 container-p-y">
-            <ElemPageTitle page_group="Courses" page_title="Reading Materials" />
+            <ElemPageTitle page_group="Assessment" page_title="Questionnaire" />
           </div>
         </div>
       </div>
