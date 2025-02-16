@@ -59,6 +59,7 @@
   import SectionNavbar from "@/components/SectionNavbar.vue";
   import ModalVideoLinkAdd from "@/components/ModalVideoLinkAdd.vue";
   import ModalVideoLinkEdit from "@/components/ModalVideoLinkEdit.vue";
+import Swal from 'sweetalert2';
   
   export default defineComponent({
     components: { ModalVideoLinkEdit, ModalVideoLinkAdd, ElemProgressbar, ElemPageTitle, SectionMenu, SectionNavbar },
@@ -82,7 +83,7 @@
             video: {}
           }
         },
-        video_tutorials: {}
+        video_tutorials: {} as any
       }
     },
     methods: {
@@ -102,7 +103,7 @@
         this.modal.edit_video.video = video; 
       },
       onDeleteVideo(video: any) {
-        this.$swal({
+        Swal.fire({
           title: "Confirmation",
           text: "Delete " + video?.title + "?",
           showCancelButton: true,
@@ -123,7 +124,7 @@
       }
     },
     async mounted() {
-      await this.onFetchVideoTutorials().then( async () => {
+      await this.onFetchVideoTutorials(1).then( async () => {
         printDevLog("Video Tutorial:", toRaw(this.$data));
       });
     }

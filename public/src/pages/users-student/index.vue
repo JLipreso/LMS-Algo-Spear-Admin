@@ -6,7 +6,10 @@
         <SectionNavbar/>
         <div class="content-wrapper">
           <div class="container-xxl flex-grow-1 container-p-y">
-            <ElemPageTitle page_group="People" page_title="Students" />
+            <div class="d-flex justify-content-between align-items-center">
+              <ElemPageTitle page_group="People" page_title="Students" />
+              <button class="btn btn-primary" @click="()=>{ modal.create.open = true; }">Register</button>
+            </div>
             <div class="card">
               <h5 class="card-header">Student Masterlist</h5>
               <ElemProgressbar :loading="loading.table"/>
@@ -46,6 +49,7 @@
         </div>
       </div>
     </div>
+    <ModalAddStudent :open="modal.create.open" @closed="()=>{ modal.create.open = false }" @refresh="onFetchStudents(1)" />
   </div>
 </template>
 <script lang="ts">
@@ -56,9 +60,10 @@
   import ElemProgressbar from "@/components/ElemProgressbar.vue";
   import SectionMenu from "@/components/SectionMenu.vue";
   import SectionNavbar from "@/components/SectionNavbar.vue";
+  import ModalAddStudent from './components/ModalAdd.vue';
 
   export default defineComponent({
-    components: { ElemProgressbar, ElemPageTitle, SectionMenu, SectionNavbar },
+    components: { ModalAddStudent, ElemProgressbar, ElemPageTitle, SectionMenu, SectionNavbar },
     setup() {
       return {
         dateTimeToString
@@ -68,6 +73,15 @@
       return {
         loading: {
           table: false
+        },
+        modal: {
+          create: {
+            open: false
+          },
+          edit: {
+            open: false,
+            info: {} as any
+          }
         },
         students: {} as any
       }

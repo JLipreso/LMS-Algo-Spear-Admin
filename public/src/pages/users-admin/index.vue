@@ -6,7 +6,10 @@
         <SectionNavbar/>
         <div class="content-wrapper">
           <div class="container-xxl flex-grow-1 container-p-y">
-            <ElemPageTitle page_group="People" page_title="Admin" />
+            <div class="d-flex justify-content-between align-items-center">
+              <ElemPageTitle page_group="People" page_title="Admin" />
+              <button class="btn btn-primary" @click="onAddNewAdmin()" >New Admin</button>
+            </div>
             <div class="card">
               <h5 class="card-header">Admin Masterlist</h5>
               <ElemProgressbar :loading="loading.table"/>
@@ -35,8 +38,8 @@
                         <span v-if="admin?.active == 1" class="d-block w-100 badge bg-success">Active</span>
                         <span v-else class="d-block w-100 badge bg-secondary">Inactive</span>
                       </td>
-                      <td><button class="btn btn-primary btn-sm">Edit</button></td>
-                      <td><button class="btn btn-danger btn-sm">Delete</button></td>
+                      <td><button class="btn btn-primary btn-sm" @click="onEditAdmin(admin)">Edit</button></td>
+                      <td><button class="btn btn-danger btn-sm" @click="onDeleteAdmin(admin)">Delete</button></td>
                     </tr>
                   </tbody>
                 </table>
@@ -46,19 +49,24 @@
         </div>
       </div>
     </div>
+    <ModalAddAdmin :open="modal.create.open" @closed="()=>{ modal.create.open = false }" @refresh="onFetchAdmins(1)" />
+    <ModalEditAdmin :open="modal.edit.open" :info="modal.edit.info" @closed="()=>{ modal.edit.open = false }" @refresh="onFetchAdmins(1)"/>
   </div>
 </template>
 <script lang="ts">
 
   import { defineComponent, toRaw } from 'vue';
-  import { printDevLog, userAdminFetchPaginate, dateTimeToString } from "@/uikit-api";
+  import { printDevLog, userAdminFetchPaginate, dateTimeToString, deleteAdmin } from "@/uikit-api";
   import ElemPageTitle from "@/components/ElemPageTitle.vue";
   import ElemProgressbar from "@/components/ElemProgressbar.vue";
   import SectionMenu from "@/components/SectionMenu.vue";
   import SectionNavbar from "@/components/SectionNavbar.vue";
+  import ModalAddAdmin from "./components/ModalAdd.vue";
+  import ModalEditAdmin from './components/ModalEdit.vue';
+  import Swal from 'sweetalert2';
 
   export default defineComponent({
-    components: { ElemProgressbar, ElemPageTitle, SectionMenu, SectionNavbar },
+    components: { ModalEditAdmin, ModalAddAdmin, ElemProgressbar, ElemPageTitle, SectionMenu, SectionNavbar },
     setup() {
       return {
         dateTimeToString
@@ -69,6 +77,15 @@
         loading: {
           table: false
         },
+        modal: {
+          create: {
+            open: false
+          },
+          edit: {
+            open: false,
+            info: {} as any
+          }
+        },
         admins: {} as any
       }
     },
@@ -78,6 +95,34 @@
         await userAdminFetchPaginate({ page: page }).then( async (admins) => {
           this.loading.table  = false;
           this.admins         = admins;
+        });
+      },
+      async onAddNewAdmin() {
+        this.modal.create.open = true;
+      },
+      async onEditAdmin(admin: any) {
+        this.modal.edit.open = true;
+        this.modal.edit.info = admin;
+      },
+      async onDeleteAdmin(admin: any) {
+        Swal.fire({
+          title: "Confirmation",
+          text: "Delete " + admin?.firstname + " " + admin?.lastname + " ?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Delete"
+        }).then( async (result) => {
+          if(result?.isConfirmed) {
+            await deleteAdmin({ admin_refid: admin?.admin_refid }).then( async (response) => {
+              if(response?.success) {
+                this.$toast.success("Admin deleted successfully");
+                this.onFetchAdmins(1);
+              }
+              else {
+                this.$toast.warning("Fail to delete admin, try again later.");
+              }
+            });
+          }
         });
       }
     },

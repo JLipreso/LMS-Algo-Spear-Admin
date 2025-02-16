@@ -83,7 +83,15 @@
     data() {
       return {
         video_groups: [] as any,
-        form: {}
+        form: {
+          video_group_refid: '',
+          video_refid: '',
+          video_link: '',
+          video_code: '',
+          title: '',
+          description: '',
+          created_by: ''
+        }
       }
     },
     methods: {
@@ -95,11 +103,20 @@
           this.video_groups = video_groups;
         }); 
       },
+      async onResetForm() {
+        this.form.video_group_refid   = '';
+        this.form.video_refid         = '';
+        this.form.video_link          = '';
+        this.form.video_code          = '';
+        this.form.title               = '';
+        this.form.description         = '';
+        this.form.created_by          = '';
+      },
       async onUpdateVideo() {
         await updateVideoTutorial(this.form).then( async (response) => {
           if(response?.success) {
             this.$toast.success('Updated successfully');
-            this.form = {};
+            this.onResetForm();
             setTimeout(() => {
               this.$emit('closed');
             }, 1200);
@@ -115,8 +132,13 @@
         if(this.open) {
           const user = await lsGetUser() as any;
           if(user) {
-            this.form               = this.video;
-            this.form.created_by    = user?.user_refid;
+            this.form.video_group_refid   = this.video?.video_group_refid;
+            this.form.video_refid         = this.video?.video_refid;
+            this.form.video_link          = this.video?.video_link;
+            this.form.video_code          = this.video?.video_code;
+            this.form.title               = this.video?.title;
+            this.form.description         = this.video?.description;
+            this.form.created_by          = user?.user_refid;
             await this.onFetchVideoGroup().then( async () => {
               printDevLog("Edit Video Data:", toRaw(this.$data));
             });
