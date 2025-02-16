@@ -3,8 +3,9 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">New Questionnaire</h5>
+          <h5 class="modal-title">Edit Questionnaire</h5>
         </div>
+        <ElemProgressbar :loading="loading.progressbar"/>
         <div class="modal-body" style="max-height: calc(100vh - 200px);overflow: auto;">
           <div class="card">
             <div class="card-body">
@@ -89,7 +90,8 @@
 
   import { defineComponent, toRaw } from 'vue';
   import { Swiper, SwiperSlide } from 'swiper/vue';
-  import { createQuestionnaire } from "@/uikit-api";
+  import { updateQuestionnaire } from "@/uikit-api";
+  import ElemProgressbar from '@/components/ElemProgressbar.vue';
 
   export default defineComponent({
     name: "ModalVideoLinkAdd",
@@ -98,13 +100,21 @@
       open: {
         default: false,
         type: Boolean
+      },
+      info: {
+        default: {} as any,
+        type: Object
       }
     },
-    components: { Swiper, SwiperSlide },
+    components: { ElemProgressbar, Swiper, SwiperSlide },
     data() {
       return {
         swiper: {} as any,
+        loading: {
+          progressbar: false
+        },
         form: {
+          question_refid: "",
           question: "",
           is_choices: 1,
           choice_a: "",
@@ -124,11 +134,11 @@
         this.swiper = event;
       },
       onResetChoiceForm() {
-        this.form.choice_a      = '';
-        this.form.choice_b      = '';
-        this.form.choice_c      = '';
-        this.form.choice_d      = '';
-        this.form.answer        = '';
+        this.form.choice_a      = this.info?.choice_a;
+        this.form.choice_b      = this.info?.choice_b;
+        this.form.choice_c      = this.info?.choice_c;
+        this.form.choice_d      = this.info?.choice_d;
+        this.form.answer        = this.info?.answer;
       },
       onResetForm() {
         this.form.question      = '';
@@ -151,15 +161,32 @@
         }
       },
       async onSubmitQuestionnaire() {
-        await createQuestionnaire(this.form).then( async (response) => {
-          if(response?.success) {
-            this.$toast.success("Questionnaire created");
-            this.onResetForm();
+        await updateQuestionnaire(this.form).then( async (response) => {
+          console.log(updateQuestionnaire);
+        });
+      }
+    },
+    watch: {
+      info: function () {
+        this.loading.progressbar    = true;
+        this.form.question_refid    = this.info?.question_refid;
+        this.form.question          = this.info?.question;
+        this.form.is_choices        = this.info?.is_choices;
+        this.form.choice_a          = this.info?.choice_a;
+        this.form.choice_b          = this.info?.choice_b;
+        this.form.choice_c          = this.info?.choice_c;
+        this.form.choice_d          = this.info?.choice_d;
+        this.form.answer            = this.info?.answer;
+        this.form.created_by        = this.info?.created_by;
+        setTimeout(()=> {
+          if(this.info?.is_choices == 1) {
+            this.swiper.slideTo(0);
           }
           else {
-            this.$toast.warning("Fail to create questionnaire, try again later");
+            this.swiper.slideTo(1);
           }
-        });
+          this.loading.progressbar = false;
+        },800);
       }
     }
   });
