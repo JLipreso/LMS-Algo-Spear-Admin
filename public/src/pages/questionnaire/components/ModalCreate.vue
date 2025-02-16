@@ -8,18 +8,28 @@
         <div class="modal-body" style="max-height: calc(100vh - 200px);overflow: auto;">
           <div class="card">
             <div class="card-body">
-              <div class="mb-3">
-                <div class="d-flex justify-content-between">
-                  <label class="form-label">Question</label>
-                  <select class="border-0" @change="onChangeAnsweType">
+              <div class="row mb-3">
+                <div class="col-6">
+                  <label class="form-label">Answer Type</label>
+                  <select class="form-control" @change="onChangeAnsweType">
                     <option value="choices">Choices</option>
                     <option value="input">Input</option>
                   </select>
                 </div>
+                <div class="col-6">
+                  <label class="form-label">Category</label>
+                  <select v-model="form.category_refid" class="form-control">
+                    <option :value="0">Select Category</option>
+                    <option v-for="(cat, ci) in categories" :key="ci" :value="cat?.group_refid">{{ cat?.name }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Question</label>
                 <textarea v-model="form.question" class="form-control" rows="3"></textarea>
               </div>
               <swiper :auto-height="true" :slides-per-view="1" :space-between="0" @swiper="onSwiper">
-                <swiper-slide>
+                <swiper-slide class="swiper-no-swiping">
                   <div class="mb-3">
                     <label class="form-label">Input value for option A</label>
                     <div class="input-group mb-3">
@@ -62,7 +72,7 @@
                     </div>
                   </div>
                 </swiper-slide>
-                <swiper-slide>
+                <swiper-slide class="swiper-no-swiping">
                   <div class="mb-3">
                     <label class="form-label">Input answer</label>
                     <div class="input-group mb-3">
@@ -72,14 +82,12 @@
                   </div>
                 </swiper-slide>
               </swiper>
-              <div class="d-flex justify-content-end mt-4">
-                <button class="btn btn-primary" @click="onSubmitQuestionnaire" >Submit Questionnaire</button>
-              </div>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" @click="closeModal()">Close</button>
+          <button class="btn btn-secondary" @click="closeModal()">Close</button>
+          <button class="btn btn-primary" @click="onSubmitQuestionnaire" >Create Questionnaire</button>
         </div>
       </div>
     </div>
@@ -89,7 +97,7 @@
 
   import { defineComponent, toRaw } from 'vue';
   import { Swiper, SwiperSlide } from 'swiper/vue';
-  import { createQuestionnaire } from "@/uikit-api";
+  import { createQuestionnaire, fetchAllQuestionnaireCategory, lsGetUser, printDevLog } from "@/uikit-api";
 
   export default defineComponent({
     name: "ModalVideoLinkAdd",
@@ -104,7 +112,9 @@
     data() {
       return {
         swiper: {} as any,
+        categories: [] as any,
         form: {
+          category_refid: "0",
           question: "",
           is_choices: 1,
           choice_a: "",
@@ -131,12 +141,13 @@
         this.form.answer        = '';
       },
       onResetForm() {
-        this.form.question      = '';
-        this.form.choice_a      = '';
-        this.form.choice_b      = '';
-        this.form.choice_c      = '';
-        this.form.choice_d      = '';
-        this.form.answer        = '';
+        this.form.category_refid  = '0';
+        this.form.question        = '';
+        this.form.choice_a        = '';
+        this.form.choice_b        = '';
+        this.form.choice_c        = '';
+        this.form.choice_d        = '';
+        this.form.answer          = '';
       },
       onChangeAnsweType(event: any) {
         if(event?.target?.value == 'input') {
@@ -150,6 +161,11 @@
           this.onResetChoiceForm();
         }
       },
+      async fetchAllCategory() {
+        await fetchAllQuestionnaireCategory().then( async (categories) => {
+          this.categories = categories;
+        });
+      },
       async onSubmitQuestionnaire() {
         await createQuestionnaire(this.form).then( async (response) => {
           if(response?.success) {
@@ -157,9 +173,22 @@
             this.onResetForm();
           }
           else {
-            this.$toast.warning("Fail to create questionnaire, try again later");
+            this.$toast.warning(response?.message);
           }
         });
+      }
+    },
+    watch: {
+      open: async function () {
+        if(this.open) {
+          var user = await lsGetUser() as any;
+          if(user?.user_refid) {
+            this.form.created_by = user?.user_refid;
+          }
+          await this.fetchAllCategory().then( async () => {
+            printDevLog("Create Questionnaire:", toRaw(this.$data));
+          });
+        }
       }
     }
   });

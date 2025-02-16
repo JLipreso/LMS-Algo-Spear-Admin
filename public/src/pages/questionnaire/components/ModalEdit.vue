@@ -9,18 +9,28 @@
         <div class="modal-body" style="max-height: calc(100vh - 200px);overflow: auto;">
           <div class="card">
             <div class="card-body">
-              <div class="mb-3">
-                <div class="d-flex justify-content-between">
-                  <label class="form-label">Question</label>
-                  <select class="border-0" @change="onChangeAnsweType">
+              <div class="row mb-3">
+                <div class="col-6">
+                  <label class="form-label">Answer Type</label>
+                  <select class="form-control" @change="onChangeAnsweType">
                     <option value="choices">Choices</option>
                     <option value="input">Input</option>
                   </select>
                 </div>
+                <div class="col-6">
+                  <label class="form-label">Category</label>
+                  <select v-model="form.category_refid" class="form-control">
+                    <option :value="0">Select Category</option>
+                    <option v-for="(cat, ci) in categories" :key="ci" :value="cat?.group_refid">{{ cat?.name }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Question</label>
                 <textarea v-model="form.question" class="form-control" rows="3"></textarea>
               </div>
               <swiper :auto-height="true" :slides-per-view="1" :space-between="0" @swiper="onSwiper">
-                <swiper-slide>
+                <swiper-slide class="swiper-no-swiping">
                   <div class="mb-3">
                     <label class="form-label">Input value for option A</label>
                     <div class="input-group mb-3">
@@ -62,7 +72,7 @@
                       </select>
                     </div>
                   </div>
-                </swiper-slide>
+                </swiper-slide class="swiper-no-swiping">
                 <swiper-slide>
                   <div class="mb-3">
                     <label class="form-label">Input answer</label>
@@ -74,13 +84,14 @@
                 </swiper-slide>
               </swiper>
               <div class="d-flex justify-content-end mt-4">
-                <button class="btn btn-primary" @click="onSubmitQuestionnaire" >Submit Questionnaire</button>
+                
               </div>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" @click="closeModal()">Close</button>
+          <button class="btn btn-secondary" @click="closeModal()">Close</button>
+          <button class="btn btn-primary" @click="onSubmitQuestionnaire" >Update Questionnaire</button>
         </div>
       </div>
     </div>
@@ -90,7 +101,7 @@
 
   import { defineComponent, toRaw } from 'vue';
   import { Swiper, SwiperSlide } from 'swiper/vue';
-  import { updateQuestionnaire } from "@/uikit-api";
+  import { updateQuestionnaire, fetchAllQuestionnaireCategory } from "@/uikit-api";
   import ElemProgressbar from '@/components/ElemProgressbar.vue';
 
   export default defineComponent({
@@ -113,7 +124,9 @@
         loading: {
           progressbar: false
         },
+        categories: [] as any,
         form: {
+          category_refid: "0",
           question_refid: "",
           question: "",
           is_choices: 1,
@@ -162,31 +175,41 @@
       },
       async onSubmitQuestionnaire() {
         await updateQuestionnaire(this.form).then( async (response) => {
-          console.log(updateQuestionnaire);
+          console.log(response);
         });
-      }
+      },
+      async fetchAllCategory() {
+        await fetchAllQuestionnaireCategory().then( async (categories) => {
+          this.categories = categories;
+        });
+      },
     },
     watch: {
-      info: function () {
-        this.loading.progressbar    = true;
-        this.form.question_refid    = this.info?.question_refid;
-        this.form.question          = this.info?.question;
-        this.form.is_choices        = this.info?.is_choices;
-        this.form.choice_a          = this.info?.choice_a;
-        this.form.choice_b          = this.info?.choice_b;
-        this.form.choice_c          = this.info?.choice_c;
-        this.form.choice_d          = this.info?.choice_d;
-        this.form.answer            = this.info?.answer;
-        this.form.created_by        = this.info?.created_by;
-        setTimeout(()=> {
-          if(this.info?.is_choices == 1) {
-            this.swiper.slideTo(0);
-          }
-          else {
-            this.swiper.slideTo(1);
-          }
-          this.loading.progressbar = false;
-        },800);
+      open: async function () {
+        if(this.open) {
+          await this.fetchAllCategory().then( async () => {
+            this.loading.progressbar    = true;
+            this.form.category_refid    = this.info?.category_refid;
+            this.form.question_refid    = this.info?.question_refid;
+            this.form.question          = this.info?.question;
+            this.form.is_choices        = this.info?.is_choices;
+            this.form.choice_a          = this.info?.choice_a;
+            this.form.choice_b          = this.info?.choice_b;
+            this.form.choice_c          = this.info?.choice_c;
+            this.form.choice_d          = this.info?.choice_d;
+            this.form.answer            = this.info?.answer;
+            this.form.created_by        = this.info?.created_by;
+            setTimeout(()=> {
+              if(this.info?.is_choices == 1) {
+                this.swiper.slideTo(0);
+              }
+              else {
+                this.swiper.slideTo(1);
+              }
+              this.loading.progressbar = false;
+            },800);
+          });
+        }
       }
     }
   });

@@ -11,7 +11,15 @@
               <button class="btn btn-primary" @click="() => { modal.create.open = true }">Create</button>
             </div>
             <div class="card">
-              <h5 class="card-header">Questionnaires</h5>
+              <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-header">Questionnaires</h5>
+                <div class="px-2">
+                  <select class="form-control" style="width: 160px;" @change="onChangePage">
+                    <option value="0">Select Page</option>
+                    <option v-for="(page, pi) in questionnaire?.page_links" :key="pi" :value="page?.page_no">{{ page?.page_label }}</option>
+                  </select>
+                </div>
+              </div>
               <ElemProgressbar :loading="loading.table"/>
               <div class="table-responsive text-nowrap">
                 <table class="table">
@@ -81,6 +89,9 @@
           this.loading.table = false;
           this.questionnaire = questionnaire;
         });
+      },
+      async onChangePage(event: any) {
+        await this.onFetchPaginate(event?.target?.value);
       },
       async onEditRequest(info: any) {
         this.modal.edit.info = info;
