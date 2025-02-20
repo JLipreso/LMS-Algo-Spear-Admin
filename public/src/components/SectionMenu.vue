@@ -50,14 +50,42 @@
           <div>Admin</div>
         </router-link>
       </li>
+      <li class="menu-header small text-uppercase">
+        <span class="menu-header-text">System</span>
+      </li>
+      <li class="menu-item">
+        <div class="px-4">
+          <button class="btn btn-danger w-100" @click="onLogout()" >
+            <i class="bi bi-power me-2"></i>
+            <span>Logout</span>
+          </button>
+        </div>
+      </li>
     </ul>
   </aside>
 </template>
 <script lang="ts">
 
+  import Swal from 'sweetalert2';
   import { defineComponent } from 'vue';
 
   export default defineComponent({
     name: "SectionMenu",
+    methods: {
+      async onLogout() {
+        Swal.fire({
+          title: "Confirmation",
+          text: "Logout admin panel?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Logout"
+        }).then( async (result) => {
+          if(result.isConfirmed) {
+            localStorage.clear();
+            this.$router.replace("/");
+          }
+        });
+      }
+    }
   });
 </script>

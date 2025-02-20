@@ -10,7 +10,7 @@
           </div>
           <span>Video Tutorial</span>
           <h3 class="card-title text-nowrap mb-1">{{ count }}</h3>
-          <small class="text-success fw-semibold">View Data</small>
+          <router-link class="text-success fw-semibold" to="/video-tutorials"><small>View Data</small></router-link>
         </div>
       </div>
     </div>
