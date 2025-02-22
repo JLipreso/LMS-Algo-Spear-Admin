@@ -105,6 +105,7 @@
         this.modal.edit.info = admin;
       },
       async onDeleteAdmin(admin: any) {
+        printDevLog("Delete User:", toRaw(admin));
         Swal.fire({
           title: "Confirmation",
           text: "Delete " + admin?.firstname + " " + admin?.lastname + " ?",
@@ -113,7 +114,7 @@
           confirmButtonText: "Delete"
         }).then( async (result) => {
           if(result?.isConfirmed) {
-            await deleteAdmin({ admin_refid: admin?.admin_refid }).then( async (response) => {
+            await deleteAdmin({ admin_refid: admin?.user_refid }).then( async (response) => {
               if(response?.success) {
                 this.$toast.success("Admin deleted successfully");
                 this.onFetchAdmins(1);

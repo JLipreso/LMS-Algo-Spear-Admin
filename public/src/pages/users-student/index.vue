@@ -38,8 +38,8 @@
                         <span v-if="student?.active == 1" class="d-block w-100 badge bg-success">Active</span>
                         <span v-else class="d-block w-100 badge bg-secondary">Inactive</span>
                       </td>
-                      <td><button class="btn btn-primary btn-sm">Edit</button></td>
-                      <td><button class="btn btn-danger btn-sm">Delete</button></td>
+                      <td><button class="btn btn-primary btn-sm" @click="onEditUser(student)">Edit</button></td>
+                      <td><button class="btn btn-danger btn-sm" @click="onDeleteUser(student)">Delete</button></td>
                     </tr>
                   </tbody>
                 </table>
@@ -50,20 +50,23 @@
       </div>
     </div>
     <ModalAddStudent :open="modal.create.open" @closed="()=>{ modal.create.open = false }" @refresh="onFetchStudents(1)" />
+    <ModalEditStudent :open="modal.edit.open" :info="modal.edit.info" @closed="()=>{ modal.edit.open = false }" @refresh="onFetchStudents(1)"/>
   </div>
 </template>
 <script lang="ts">
 
   import { defineComponent, toRaw } from 'vue';
-  import { printDevLog, userStudentFetchPaginate, dateTimeToString } from "@/uikit-api";
+  import { deleteStudent, printDevLog, userStudentFetchPaginate, dateTimeToString, SystemMessage } from "@/uikit-api";
   import ElemPageTitle from "@/components/ElemPageTitle.vue";
   import ElemProgressbar from "@/components/ElemProgressbar.vue";
   import SectionMenu from "@/components/SectionMenu.vue";
   import SectionNavbar from "@/components/SectionNavbar.vue";
   import ModalAddStudent from './components/ModalAdd.vue';
+  import ModalEditStudent from './components/ModalEdit.vue';
+  import Swal from 'sweetalert2';
 
   export default defineComponent({
-    components: { ModalAddStudent, ElemProgressbar, ElemPageTitle, SectionMenu, SectionNavbar },
+    components: { ModalEditStudent, ModalAddStudent, ElemProgressbar, ElemPageTitle, SectionMenu, SectionNavbar },
     setup() {
       return {
         dateTimeToString
@@ -93,6 +96,35 @@
           this.loading.table  = false;
           this.students       = students;
         });
+      },
+      async onDeleteUser(user: any) {
+        printDevLog("Delete User:", toRaw(user));
+        Swal.fire({
+          title: "COnfirmation",
+          text: "Delete " + user?.firstname + " " + user?.lastname + "?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Delete"
+        }).then( async (result) => {
+          if(result.isConfirmed) {
+            this.loading.table = true;
+            await deleteStudent({ user_refid: user?.user_refid }).then( async (response) => {
+              this.loading.table = false;
+              if(response?.success) {
+                await this.onFetchStudents(1).then( async () => {
+                  this.$toast.success(SystemMessage()['DELETE_SUCCESS']);
+                });
+              }
+              else {
+                this.$toast.warning(response?.message);
+              }
+            });
+          }
+        });
+      },
+      async onEditUser(user: any) {
+        this.modal.edit.open = true;
+        this.modal.edit.info = user;
       }
     },
     async mounted() {

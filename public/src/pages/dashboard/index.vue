@@ -10,7 +10,7 @@
             <div class="row">
               <div class="col-lg-8 mb-4 order-0">
                 <SectionWelcome/>
-                <TableQuizzes/>
+                <TableQuizzes :quiz="quiz"/>
               </div>
               <div class="col-lg-4 col-md-4 order-1">
                 <div class="row">
@@ -39,12 +39,13 @@
   import CardReadingMaterialsCounts from "./components/CardReadingMaterialsCounts.vue";
   import CardVideoTutorialCounts from "./components/CardVideoTutorialCounts.vue";
   import TableQuizzes from './components/TableQuizzes.vue';
-  import { countAdmins, countReadingMaterials, countStudents, countVideoTutorials, printDevLog } from '@/uikit-api';
+  import { fetchAllSavedQuizzes, countAdmins, countReadingMaterials, countStudents, countVideoTutorials, printDevLog } from '@/uikit-api';
 
   export default defineComponent({
     components: { TableQuizzes, CardVideoTutorialCounts, CardReadingMaterialsCounts, CardAdminCounts, CardStudentCounts, SectionWelcome, ElemPageTitle, SectionMenu, SectionNavbar },
     data() {
       return {
+        quiz: {} as any,
         students: 0,
         admins: 0,
         reading_materials: 0,
@@ -53,14 +54,17 @@
     },
     methods: {
       async counter() {
-        await countStudents().then( async (students) => {
-          this.students = students;
-          await countAdmins().then( async (admins) => {
-            this.admins = admins;
-            await countReadingMaterials().then( async (reading_materials) => {
-              this.reading_materials = reading_materials;
-              await countVideoTutorials().then( async (video_tutorials) => {
-                this.video_tutorials = video_tutorials;
+        await fetchAllSavedQuizzes().then( async (quiz) => {
+          this.quiz = quiz;
+          await countStudents().then( async (students) => {
+            this.students = students;
+            await countAdmins().then( async (admins) => {
+              this.admins = admins;
+              await countReadingMaterials().then( async (reading_materials) => {
+                this.reading_materials = reading_materials;
+                await countVideoTutorials().then( async (video_tutorials) => {
+                  this.video_tutorials = video_tutorials;
+                });
               });
             });
           });

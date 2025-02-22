@@ -3,7 +3,8 @@
     <div class="card">
       <img class="w-100" src="/src/assets/img/reading-material-banner.jpg" />
       <div class="card-body">
-        <h5 class="text-dark">{{ article?.title }}</h5>
+        <h5 class="text-dark mb-0">{{ article?.title }}</h5>
+        <p class="text-dark">{{ article?.description }}</p>
         <p><small>Posted on {{ dateTimeToString(article?.created_at) }}</small></p>
         <div class="row">
           <div class="col-6">

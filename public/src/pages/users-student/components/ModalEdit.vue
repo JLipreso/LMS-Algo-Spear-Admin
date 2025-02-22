@@ -56,7 +56,7 @@
 <script lang="ts">
 
   import { defineComponent, toRaw } from 'vue';
-  import { updateAdmin } from "@/uikit-api";
+  import { updateStudent } from "@/uikit-api";
   import ElemProgressbar from '@/components/ElemProgressbar.vue';
   
 
@@ -94,7 +94,7 @@
         this.$emit("closed");
       },
       async onResetForm() {
-        this.form.user_refid       = '';
+        this.form.user_refid        = '';
         this.form.firstname         = '';
         this.form.lastname          = '';
         this.form.email             = '';
@@ -105,7 +105,7 @@
       },
       async onUpdateAdmin() {
         this.loading = true;
-        await updateAdmin(this.form).then( async (response) => {
+        await updateStudent(this.form).then( async (response) => {
           this.loading = false;
           if(response?.success) {
             this.$toast.success("Updated successfully");

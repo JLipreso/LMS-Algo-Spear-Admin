@@ -38,7 +38,7 @@
                       <td class="text-wrap">{{ question?.question }}</td>
                       <td>{{ question?.is_choices == 0 ? 'Input':'Choices' }}</td>
                       <td><button class="btn btn-primary btn-sm w-100" @click="onEditRequest(question)" >Edit</button></td>
-                      <td><button class="btn btn-danger btn-sm w-100">Delete</button></td>
+                      <td><button class="btn btn-danger btn-sm w-100" @click="onDeleteRequest(question)" >Delete</button></td>
                     </tr>
                   </tbody>
                 </table>
@@ -62,6 +62,7 @@
   import ModalCreateQuestionnaire from './components/ModalCreate.vue';
   import ModalEditQuestionnaire from './components/ModalEdit.vue';
   import ElemProgressbar from "@/components/ElemProgressbar.vue";
+import Swal from 'sweetalert2';
 
   export default defineComponent({
     components: { ElemProgressbar, ModalEditQuestionnaire, ModalCreateQuestionnaire, ElemPageTitle, SectionMenu, SectionNavbar },
@@ -96,6 +97,19 @@
       async onEditRequest(info: any) {
         this.modal.edit.info = info;
         this.modal.edit.open = true;
+      },
+      async onDeleteRequest(info: any) {
+        Swal.fire({
+          title: "Confirmation",
+          text: "Delete selected questionnaire?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Delete"
+        }).then( async (result) => {
+          if(result.isConfirmed) {
+            
+          }
+        });
       }
     },
     async mounted() {

@@ -5,38 +5,22 @@
       <table class="table table-striped">
         <thead>
           <tr>
-            <th>No</th>
-            <th>Name</th>
-            <th>Date Started</th>
-            <th>Total</th>
-            <th>Score</th>
-            <th>Result</th>
+            <th class="bg-dark text-white">No</th>
+            <th class="bg-dark text-white">Name</th>
+            <th class="bg-dark text-white">Date Started</th>
+            <th class="bg-dark text-white">Total</th>
+            <th class="bg-dark text-white">Score</th>
+            <th class="bg-dark text-white" style="width: 80px;">Result</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>Lipreso, Jason</td>
-            <td>Feb 18, 2025</td>
-            <td>75</td>
-            <td>5</td>
-            <td><span class="text-danger">FAIL</span></td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Lipreso, Jason</td>
-            <td>Feb 18, 2025</td>
-            <td>15</td>
-            <td>15</td>
-            <td><span class="text-success">PASSED</span></td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Lipreso, Jason</td>
-            <td>Feb 18, 2025</td>
-            <td>75</td>
-            <td>0</td>
-            <td><span class="text-danger">FAIL</span></td>
+          <tr v-for="(q, i) in quiz" :key="i">
+            <td>{{ i + 1 }}</td>
+            <td>{{ q?.user_name }}</td>
+            <td>{{ dateTimeToString(q?.quiz_date) }}</td>
+            <td>{{ q?.total }}</td>
+            <td>{{ q?.score }} (<small class="text-warning fw-bold">{{ onCalculateResult(q?.score, q?.total)['percentage'] }}</small>)</td>
+            <td v-html="onCalculateResult(q?.score, q?.total)['status_hml']"></td>
           </tr>
         </tbody>
       </table>
@@ -45,10 +29,38 @@
 </template>
 <script lang="ts">
 
+  import { dateTimeToString, calculateQuizResult } from '@/uikit-api';
   import { defineComponent } from 'vue';
 
   export default defineComponent({
-    props: {}
+    props: {
+      quiz: {
+        default: {} as any,
+        type: Object
+      }
+    },
+    setup() {
+      return {
+        dateTimeToString, calculateQuizResult
+      }
+    },
+    methods: {
+      onCalculateResult(score: number, total: number) {
+        const result    = calculateQuizResult(score, total, 75);
+        var status_hml  = '';
+        if((result.status).toLocaleLowerCase() == 'pass') {
+          status_hml = "<button class='btn btn-success btn-sm w-100' style='border-radius: 30px;'>Passed</button>";
+        }
+        else {
+          status_hml = "<button class='btn btn-danger btn-sm w-100' style='border-radius: 30px;'>Fail</button>";
+        }
+        return {
+          percentage: result.percentage,
+          status: result.status,
+          status_hml: status_hml
+        }
+      }
+    }
   });
 
 </script>
