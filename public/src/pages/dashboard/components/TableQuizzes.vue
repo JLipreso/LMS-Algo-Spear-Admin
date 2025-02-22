@@ -1,7 +1,7 @@
 <template>
   <div class="card mt-4">
     <h5 class="card-header">Recent Quizzes</h5>
-    <div class="table-responsive text-nowrap">
+    <div class="table-responsive text-nowrap" style="max-height: 450px;overflow-y: auto;">
       <table class="table table-striped">
         <thead>
           <tr>
